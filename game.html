@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Squid Game - Setup</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+
+  <body>
+    <audio
+      src="assets/music/Red Light Green Light SquidGame Song.mp3"
+      autoplay
+      loop
+    ></audio>
+
+    <div class="header">
+      <img src="assets/images/TextHeader.png" alt="Josephus Game Logo" />
+    </div>
+
+    <div class="box-background"></div>
+    <div class="container" id="game-settings">
+      <h2>Enter Game Settings</h2>
+
+      <label for="players">Number of Players:</label>
+      <input
+        type="number"
+        id="players"
+        placeholder="Enter number of players"
+        min="3"
+        max="40"
+      />
+
+      <label for="skip">Skip Count:</label>
+      <input
+        type="number"
+        id="skip"
+        placeholder="Enter skip count"
+        min="2"
+        required
+      />
+
+      <label for="speed">Game Speed:</label>
+      <select id="speed" placeholder="Enter speed" required>
+        <option value="500">0.5s</option>
+        <option value="1000">1s</option>
+        <option value="1500">1.5s</option>
+        <option value="2000">2s</option>
+      </select>
+      <a href="simulation.html">
+        <button id="start-btn" class="start-button">Start Game</button>
+      </a>
+    </div>
+    <script>
+      $(document).ready(function () {
+        const game = new JosephusGame();
+
+        // Update skip range when players changes
+        $("#players").on("blur", function () {
+          let players = parseInt($(this).val());
+          let skipInput = $("#skip");
+
+          if (isNaN(players) || players < 3 || players > 40) {
+            window.alert("Error: Number of players must be between 3 and 40");
+            $(this).val(""); // Clear invalid input
+            skipInput.attr("max", "");
+            return;
+          }
+
+          skipInput.attr("min", 2);
+          skipInput.attr("max", players);
+          // Check current skip value
+          let currentSkip = parseInt(skipInput.val());
+          if (currentSkip && (currentSkip < 2 || currentSkip > players)) {
+            window.alert(`Error: Skip count must be between 2 and ${players}`);
+            skipInput.val(""); // Clear invalid skip
+          }
+        });
+
+        // Validate skip on blur
+        $("#skip").on("blur", function () {
+          let players = parseInt($("#players").val());
+          let skip = parseInt($(this).val());
+
+          if (!isNaN(players) && players >= 3 && players <= 40) {
+            if (isNaN(skip) || skip < 2 || skip > players) {
+              window.alert(
+                `Error: Skip count must be between 2 and ${players}`
+              );
+              $(this).val(""); // Clear invalid skip
+            }
+          }
+        });
+
+        $("#start-btn").click(function (e) {
+          e.preventDefault(); // Prevent default navigation
+
+          let players = parseInt($("#players").val());
+          let skip = parseInt($("#skip").val());
+          let speed = parseInt($("#speed").val());
+
+          // Validate players
+          if (isNaN(players) || players < 3 || players > 40) {
+            window.alert("Error: Number of players must be between 3 and 40");
+            return;
+          }
+
+          // Validate skip
+          if (isNaN(skip) || skip < 2 || skip > players) {
+            window.alert(`Error: Skip count must be between 2 and ${players}`);
+            return;
+          }
+
+          // Store values and proceed
+          localStorage.setItem("numberOfPlayers", players);
+          localStorage.setItem("skipNumber", skip);
+          localStorage.setItem("speed", speed);
+
+          const response = game.setupGame(players, skip, speed);
+
+          if (response.includes("Error")) {
+            window.alert(response);
+            return;
+          }
+
+          window.location.href = "simulation.html";
+        });
+
+        function updateUI(players, eliminated) {
+          console.log("Player eliminated:", eliminated);
+        }
+      });
+    </script>
+  </body>
+</html>

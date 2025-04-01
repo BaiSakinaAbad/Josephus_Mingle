@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Are You Ready?</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <img src="assets/images/TextHeader.png" alt="Josephus Game Logo" />
+    </div>
+    <audio src="assets/music/IntroMusic.mp3" autoplay loop></audio>
+    <div class="container ready-container">
+      <h1>Are you ready?</h1>
+      <p>Click "Yes" to proceed or "No" to change your mind.</p>
+    </div>
+    <div clas="button-container">
+      <button id="yes-btn" class="readyButton">YES</button>
+      <button id="no-btn" class="readyButton">NO</button>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        const game = new JosephusGame();
+        let noClicked = false;
+
+        $("#yes-btn").click(function () {
+          const response = game.handleReadyResponse("YES");
+          if (response.includes("Page 3")) {
+            window.location.href = "game.html";
+          }
+        });
+
+        $("#no-btn").click(function () {
+          const response = game.handleReadyResponse("NO");
+          if (response.includes("changes to 'YES'")) {
+            noClicked = true;
+            $("#no-btn")
+              .text("YES")
+              .off("click")
+              .click(function () {
+                const yesResponse = game.handleReadyResponse("YES");
+                if (yesResponse.includes("Page 3")) {
+                  window.location.href = "game.html";
+                }
+              });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
