@@ -1,6 +1,6 @@
 <h1 align="center>Josephus Mingle</h1>
 
-![Josephus Mingle Start Screen](https://github.com/sairarat/Josephus_Mingle/blob/main/Screenshot%202025-04-01%20132313.png)
+![Josephus Mingle Start Screen](https://github.com/sairarat/Josephus_Mingle/blob/main/Starting%20Screen.png)
 
 # Machine Problem for Design and Analysis of Algorithms
 
